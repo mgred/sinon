@@ -36,7 +36,8 @@
     "postbuild": "run-s test-esm-bundle",
     "prepublishOnly": "npm run build",
     "preversion": "./scripts/preversion.sh",
-    "postversion": "./scripts/postversion.sh"
+    "postversion": "./scripts/postversion.sh",
+    "serve-docs": "docker-compose --file ./docs/serve-docs.yml up"
   },
   "lint-staged": {
     "*.js": "eslint",

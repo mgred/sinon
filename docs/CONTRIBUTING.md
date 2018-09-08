@@ -39,6 +39,18 @@ bundle exec jekyll serve
 
 After that you can access the site at http://localhost:4000/
 
+### Running the documentation in a docker container
+
+If you have [docker](https://docs.docker.com/install/) and [docker-compose](https://docs.docker.com/compose/install/) installed, simply run:
+
+```shell
+npm run serve-docs
+```
+
+This will run a container with the [`jekyll/jekyll`](https://hub.docker.com/r/jekyll/jekyll/) image applied.
+
+After that you can access the site at http://localhost:4000/
+
 ## Linting of Markdown
 
 To help keep the documentation syntactically consistent and free of syntax violations, a pre-commit hook using [markdownlint](https://github.com/DavidAnson/markdownlint) verifies Markdown documents.
