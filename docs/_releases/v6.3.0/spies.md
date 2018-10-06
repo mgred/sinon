@@ -1,9 +1,10 @@
 ---
 layout: page
 title: Spies - Sinon.JS
+breadcrumb: spies
 ---
 
-## Introduction
+### Introduction
 
 ### What is a test spy?
 
@@ -78,27 +79,6 @@ all [calls][call]. The following is a slightly contrived example:
     all cases. The original method can be restored by calling
     <code>object.method.restore()</code>. The returned spy is the function
     object which replaced the original method. <code>spy === object.method</code>.
-  </dd>
-  <dt>
-    <code>var spy = sinon.spy(object, "property", ["get", "set"]);</code>
-  </dt>
-  <dd>
-    Used for spying on getters and setters.
-    Returns a [propertyDescriptor][getOwnPropertyDescriptor] with spies for the passed accessors.
-
-```javascript
-var sinon = require('sinon');
-var object = {
-    get myProperty() {
-        return 'fb41a645-24fb-4580-b4c0-17d71ecc1c74';
-    }
-};
-
-var descriptor = sinon.spy(object, 'myProperty', ['get']);
-var value = object.myProperty;
-
-console.log('callCount:', descriptor.get.callCount); // callCount: 1
-```
   </dd>
 </dl>
 
@@ -177,8 +157,6 @@ Creates a spy that only records [calls][call] when the received arguments match 
 "should call method once with each argument": function () {
     var object = { method: function () {} };
     var spy = sinon.spy(object, "method");
-    spy.withArgs(42);
-    spy.withArgs(1);
 
     object.method(42);
     object.method(1);
@@ -249,6 +227,18 @@ Returns `true` if the spy was called before `anotherSpy`
 Returns `true` if the spy was called after `anotherSpy`
 
 
+#### `spy.calledImmediatelyBefore(anotherSpy);`
+
+Returns `true` if `spy` was called before `anotherSpy`, and no spy [calls][call]
+occurred between `spy` and `anotherSpy`.
+
+
+#### `spy.calledImmediatelyAfter(anotherSpy);`
+
+Returns `true` if `spy` was called after `anotherSpy`, and no spy [calls][call]
+occurred between `anotherSpy` and `spy`.
+
+
 #### `spy.calledOn(obj);`
 
 Returns `true` if the spy was called at least once with `obj` as `this`. `calledOn` also accepts a matcher `spyCall.calledOn(sinon.match(fn))` (see [matchers](matchers)).
@@ -265,6 +255,10 @@ Returns `true` if spy was called at least once with the provided arguments.
 
 Can be used for partial matching, Sinon only checks the provided arguments against actual arguments, so a call that received the provided arguments (in the same spots) and possibly others as well will return `true`.
 
+#### `spy.calledOnceWith(arg1, arg2, ...);`
+
+Returns `true` if spy was called at exactly once with the provided arguments.
+
 
 #### `spy.alwaysCalledWith(arg1, arg2, ...);`
 
@@ -274,6 +268,10 @@ Returns `true` if spy was always called with the provided arguments (and possibl
 #### `spy.calledWithExactly(arg1, arg2, ...);`
 
 Returns `true` if spy was called at least once with the provided arguments and no others.
+
+#### `spy.calledOnceWithExactly(arg1, arg2, ...);`
+
+Returns `true` if spy was called exactly once and with only the provided arguments.
 
 
 #### `spy.alwaysCalledWithExactly(arg1, arg2, ...);`
@@ -400,127 +398,41 @@ Array of return values, `spy.returnValues[0]` is the return value of the first [
 If the call did not explicitly return a value, the value at the call's location in `.returnValues` will be `undefined`.
 
 
-#### `spy.reset()`
+#### `spy.resetHistory();`
 
 Resets the state of a spy.
 
 
-#### `spy.restore()`
+#### `spy.restore();`
 
 Replaces the spy with the original method. Only available if the spy replaced an existing method.
 
 
-#### `spy.printf("format string", [arg1, arg2, ...])`
+#### `spy.printf("format string", [arg1, arg2, ...]);`
 
 Returns the passed format string with the following replacements performed:
 
 <dl>
-    <dt><code>%n</code></dt>
-    <dd>the name of the spy "spy" by default)</dd>
+  <dt><code>%n</code></dt>
+  <dd>the name of the spy "spy" by default)</dd>
 
-    <dt><code>%c</code></dt>
-    <dd>the number of times the spy was called, in words ("once", "twice", etc.)</dd>
-    <dt><code>%C</code></dt>
-    <dd>a list of string representations of the calls to the spy, with each call prefixed by a newline and four spaces</dd>
+  <dt><code>%c</code></dt>
+  <dd>the number of times the spy was called, in words ("once", "twice", etc.)</dd>
 
-    <dt><code>%t</code></dt>
-    <dd>a comma-delimited list of <code>this</code> values the spy was called on</dd>
+  <dt><code>%C</code></dt>
+  <dd>a list of string representations of the calls to the spy, with each call prefixed by a newline and four spaces</dd>
 
-    <dt><code>%<var>n</var></code></dt>
-    <dd>the formatted value of the <var>n</var>th argument passed to <code>printf</code></dd>
+  <dt><code>%t</code></dt>
+  <dd>a comma-delimited list of <code>this</code> values the spy was called on</dd>
 
-    <dt><code>%*</code></dt>
-    <dd>a comma-delimited list of the (non-format string) arguments passed to <code>printf</code></dd>
+  <dt><code>%<var>n</var></code></dt>
+  <dd>the formatted value of the <var>n</var>th argument passed to <code>printf</code></dd>
+
+  <dt><code>%*</code></dt>
+  <dd>a comma-delimited list of the (non-format string) arguments passed to <code>printf</code></dd>
+
+  <dt><code>%D</code></dt>
+  <dd>a multi-line list of the arguments received by all calls to the spy</dd>
 </dl>
-
-
-### Individual spy calls
-
-
-##### `var spyCall = spy.getCall(n)`
-
-Returns the *nth* [call](#spycall). Accessing individual calls helps with more detailed behavior verification when the spy is called more than once.
-
-```javascript
-sinon.spy(jQuery, "ajax");
-jQuery.ajax("/stuffs");
-var spyCall = jQuery.ajax.getCall(0);
-
-assertEquals("/stuffs", spyCall.args[0]);
-```
-
-
-#### `spyCall.calledOn(obj);`
-
-Returns `true` if `obj` was `this` for this call. `calledOn` also accepts a matcher `spyCall.calledOn(sinon.match(fn))` (see [matchers](matchers)).
-
-
-#### `spyCall.calledWith(arg1, arg2, ...);`
-
-Returns `true` if call received provided arguments (and possibly others).
-
-
-#### `spyCall.calledWithExactly(arg1, arg2, ...);`
-
-Returns `true` if call received provided arguments and no others.
-
-
-#### `spyCall.calledWithMatch(arg1, arg2, ...);`
-
-Returns `true` if call received matching arguments (and possibly others).
-This behaves the same as `spyCall.calledWith(sinon.match(arg1), sinon.match(arg2), ...)`.
-
-
-#### `spyCall.notCalledWith(arg1, arg2, ...);`
-
-Returns `true` if call did not receive provided arguments.
-
-
-#### `spyCall.notCalledWithMatch(arg1, arg2, ...);`
-
-Returns `true` if call did not receive matching arguments.
-This behaves the same as `spyCall.notCalledWith(sinon.match(arg1), sinon.match(arg2), ...)`.
-
-#### `spyCall.returned(value);`
-
-Returns `true` if spied function returned the provided `value` on this call.
-
-Uses deep comparison for objects and arrays. Use `spyCall.returned(sinon.match.same(obj))` for strict comparison (see [matchers](matchers)).
-
-#### `spyCall.threw();`
-
-Returns `true` if call threw an exception.
-
-
-#### `spyCall.threw("TypeError");`
-
-Returns `true` if call threw exception of provided type.
-
-
-#### `spyCall.threw(obj);`
-
-Returns `true` if call threw provided exception object.
-
-
-#### `spyCall.thisValue`
-
-The call's `this` value.
-
-
-#### `spyCall.args`
-
-Array of received arguments.
-
-
-#### `spyCall.exception`
-
-Exception thrown, if any.
-
-
-#### `spyCall.returnValue`
-
-Return value.]}]}
-
-[getOwnPropertyDescriptor]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/getOwnPropertyDescriptor
 
 [call]: ../spy-call

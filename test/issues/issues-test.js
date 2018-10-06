@@ -520,4 +520,32 @@ describe("issues", function () {
             stub.restore();
         });
     });
+
+    describe("#1900 - calledWith returns false positive", function () {
+        it("should return false when call args don't match", function () {
+            var spy = sinon.spy();
+            var dateOne = new Date("2018-07-01");
+            var dateTwo = new Date("2018-07-31");
+
+            spy(dateOne);
+
+            var calledWith = spy.calledWith(dateTwo);
+            assert.same(calledWith, false);
+        });
+    });
+
+    describe("#1882", function () {
+        it("should use constructor name when checking deepEquality", function () {
+            function ClassWithoutProps() {}
+            function AnotherClassWithoutProps() {}
+            ClassWithoutProps.prototype.constructor = ClassWithoutProps;
+            AnotherClassWithoutProps.prototype.constructor = AnotherClassWithoutProps;
+            var arg1 = new ClassWithoutProps(); //arg1.constructor.name === ClassWithoutProps
+            var arg2 = new AnotherClassWithoutProps(); //arg2.constructor.name === Object
+            var stub = sinon.stub();
+            stub.withArgs(arg1).returns(5);
+            var result = stub(arg2);
+            assert.same(result, undefined); //[ERR_ASSERTION]: 5 === undefined
+        });
+    });
 });

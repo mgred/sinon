@@ -5,6 +5,39 @@ permalink: /releases/changelog
 ---
 # Changelog
 
+6.3.5 / 2018-10-03
+==================
+
+  * Upgrade lolex
+  * Upgrade @sinonjs/samsam - fixes minor issue with IE11 introduced in 6.3.4
+
+6.3.4 / 2018-09-18
+==================
+
+  * Update samsam, puppeteer and rollup
+  * Fix #1850 (keep context in fakes)
+
+6.3.3 / 2018-09-14
+==================
+
+  * Upgrade formatio, samsam, nise and referee
+
+6.3.2 / 2018-09-13
+==================
+
+  * Adds guard for empty properties in deepEqual when a matcher is provided (#1901)
+
+6.3.1 / 2018-09-12
+==================
+
+  * Fix use of non-cached reference to forEach
+
+6.3.0 / 2018-09-12
+==================
+
+  * Allow providing stubs overrides for sinon.createStubInstance (#1864)
+  * Bump Lolex to 2.7.4 to include IE fixes for performance.mark
+
 6.2.0 / 2018-09-04
 ==================
 

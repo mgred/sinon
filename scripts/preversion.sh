@@ -11,7 +11,9 @@ do
     fi
 done
 
+npm run lint
 npm test
+npm run test-cloud
 
 echo 'Updating History.md'
 git changelog --no-merges

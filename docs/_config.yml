@@ -5,17 +5,21 @@ description: >-
 url: 'http://sinonjs.org'
 github_username: sinonjs
 sinon:
-  current_release: v6.2.0
+  current_release: v6.3.5
 markdown: kramdown
 kramdown:
   input: GFM
   syntax_highlighter: none
   syntax_highlighter_opts:
     disable: true
-gems:
+plugins:
   - jekyll-feed
   - jekyll-redirect-from
+keep_files:
+  - assets
+  - releases
 exclude:
+  - .sass-cache
   - Gemfile
   - Gemfile.lock
   - release-source
